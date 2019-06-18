@@ -12,7 +12,7 @@
 %     \usepackage[preprint]{neurips_2018}
 
 % to compile a camera-ready version, add the [final] option, e.g.:
-     \usepackage[final]{nips_2018}
+\usepackage[final,nonatbib]{nips_2018}
 
 % to avoid loading the natbib package, add option nonatbib:
 %     \usepackage[nonatbib]{neurips_2018}
@@ -26,6 +26,22 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 
+% bibliography stuff
+\PassOptionsToPackage{%
+  backend=biber,bibencoding=utf8, %instead of bibtex
+  %backend=bibtex8,bibencoding=ascii,%
+  language=auto,%
+  % style=nature,%
+  style=authoryear-comp, % Author 1999, 2010
+  %bibstyle=authoryear,dashed=false, % dashed: substitute rep. author with ---
+  %sorting=nyt, % name, year, title
+  maxbibnames=3, % default: 3, et al.
+  backref=true,%
+  natbib=false % natbib compatibility mode (\citep and \citet still work)
+}{biblatex}
+\usepackage{biblatex}
+\addbibresource{bibliography.bib}
+
 \title{Crabsort: spike-sorting for small circuit networks}
 
 \author{%
@@ -38,13 +54,14 @@
   Cosmo Guerini \\
   Department of Biology and Volen National Center for Complex Systems \\
   Brandeis University \\
-  Waltham, MA 02453
+  Waltham, MA 02453 \\
   \texttt{machinelearning@cosmo.red} \\
   \And
   Srinivas Gorur-Shandilya \\
   Department of Biology and Volen National Center for Complex Systems \\
   Brandeis University \\
-  Waltham, MA 02453
+  Waltham, MA 02453 \\
+  \texttt{srinivasgs@brandeis.edu}
 }
 
 \begin{document}
@@ -61,16 +78,35 @@
 
 \section{Introduction}
 
-Spike-sorting is an essential component of modern electrophysiological data processing.
-Extracellular recordings take the form of voltage time series, with one waveform from each electrode.
-Action potentials (``spikes'') in the waveforms must be identified,
-as well as from which cell the spike originates.
-The first task is well-studied, and can be managed effectively by high-pass filtering and counting threshold crossings.
+Electrophysiological recording by extracelullar electrode is one of the simplest and most reliable
+methods for recording local electrical activity around the electrode tip.
+Action potentials produce characteristic voltage deflections, known as a spike waveform.
+The extracellular recordings take the form of voltage time series, with one waveform for each electrode,
+from which spikes must be identified, as well as from which cell the spike originates \autocite{quirogaSpikeSorting2012}.
+The first task is well-studied, and can be managed effectively by high-pass filtering and counting threshhold crossings \autocite{rossantSpikeSortingLarge2016, quirogaSpikeSorting2012}.
 However, it is extremely difficult to tell by eye which spikes originate from which cells.
-In smaller networks, of about 30 cells, where each cell is named and well-studied,
-it is possible.
+In larger networks with up to 1,000 simultaneous recordings, algorithms exist which can cluster
+based on PCA, SVD, and stochastic k-means matching \autocite{pachitariuKilosortRealtimeSpikesorting2016, rossantSpikeSortingLarge2016}.
 
-\section{Submission of papers to NeurIPS 2018}
+In smaller networks, of about 30 cells, where each cell is named and well-studied,
+these algorithms break down. With paucity of data and similarity between waveforms of differing cell types,
+it is not feasible to use algorithms designed for large multi-channel recordings on smaller circuit data.
+Furthermore, methods such as Granger causality can report spurious causal relationships
+if the network is strongly oscillatory \autocite{kisperskyFunctionalConnectivityRhythmic2011}.
+One solution is to use a mixed linear point process model \autocite{gerhardSuccessfulReconstructionPhysiological2013a}.
+
+Another strategy, implemented in the software package \texttt{crabsort} (S. Gorur-Shandilya, unpublished),
+uses pre-sorted data to train a neural network model which can automatically sort the remaining data.
+Briefly, this process involves dimensionally-reducing the spike trains to a 2-dimensional manifold
+and manually clustering a subset of the data.
+A neural network is trained on this dataset to identify which spikes belong to which clusters,
+where each cluster is a different neuron.
+
+We extend the \texttt{crabsort} toolkit to include several backends implementing
+fast Fourier transform-accelerated interpolation-based t-SNE (FIt-SNE) \autocite{lindermanFastInterpolationbasedTSNE2019, vandermaatenAcceleratingTSNEUsing2014}
+and uniform manifold approximation and projection \autocite{mcinnesUMAPUniformManifold2018}.
+
+\section{Crabsort}
 
 NeurIPS requires electronic submissions.  The electronic submission site is
 \begin{center}
