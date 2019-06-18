@@ -28,14 +28,6 @@
 
 \title{Crabsort: spike-sorting for small circuit networks}
 
-% The \author macro works with any number of authors. There are two commands
-% used to separate the names and addresses of multiple authors: \And and \AND.
-%
-% Using \And between authors leaves it to LaTeX to determine where to break the
-% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
-% authors names on the first line, and the last on the second line, try using
-% \AND instead of \And before the third author name.
-
 \author{%
   Alec Hoyland \\
   Center for Systems Neuroscience \\
@@ -56,7 +48,6 @@
 }
 
 \begin{document}
-% \nipsfinalcopy is no longer used
 
 \maketitle
 
@@ -67,6 +58,17 @@
   bold, and in point size 12. Two line spaces precede the abstract. The abstract
   must be limited to one paragraph.
 \end{abstract}
+
+\section{Introduction}
+
+Spike-sorting is an essential component of modern electrophysiological data processing.
+Extracellular recordings take the form of voltage time series, with one waveform from each electrode.
+Action potentials (``spikes'') in the waveforms must be identified,
+as well as from which cell the spike originates.
+The first task is well-studied, and can be managed effectively by high-pass filtering and counting threshold crossings.
+However, it is extremely difficult to tell by eye which spikes originate from which cells.
+In smaller networks, of about 30 cells, where each cell is named and well-studied,
+it is possible.
 
 \section{Submission of papers to NeurIPS 2018}
 
