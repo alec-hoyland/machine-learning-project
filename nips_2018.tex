@@ -63,11 +63,7 @@
 \maketitle
 
 \begin{abstract}
-  The abstract paragraph should be indented \nicefrac{1}{2}~inch (3~picas) on
-  both the left- and right-hand margins. Use 10~point type, with a vertical
-  spacing (leading) of 11~points.  The word \textbf{Abstract} must be centered,
-  bold, and in point size 12. Two line spaces precede the abstract. The abstract
-  must be limited to one paragraph.
+  Crabsort.
 \end{abstract}
 
 \section{Introduction}
@@ -153,7 +149,7 @@ the convolution can be simplified to multiplication in the Fourier domain,
 by taking the fast Fourier transform (FFT).
 
 In addition, instead of taking k-nearest neighbors,
-FIt-SNE uses an approximate nearest-neighbors algorithm, \texttt{ANNOY} (cite),
+FIt-SNE uses an approximate nearest-neighbors algorithm, \texttt{ANNOY} \autocite{bernhardssonApproximateNearestNeighbors2019},
 which can take advantage of multithreading for a speed increase.
 FIt-SNE results in time-complexity $\mathcal{O}(n \log n)$,
 but converges 15-30x times faster than the Barnes-Hut accelerated t-SNE implementation.
@@ -175,15 +171,8 @@ UMAP then performs spectral clustering on the Laplacian matrix constructed from 
 Optimization of the fuzzy simplicial set cross entropy follows to optimize the embedding.
 UMAP is stable under subsampling and must faster than even FIt-SNE,
 though the clustering is more opaque, and therefore sometimes less desirable than PCA or t-SNE.
-Furthermore, it is deterministic and therefore allows new data to be added to embedded
+Furthermore, UMAP is deterministic and therefore allows new data to be mapped to the low-dimensional space
 without recomputing the entire embedded representation.
-
-NeurIPS requires electronic submissions.  The electronic submission site is
-\begin{center}
-  \url{https://cmt.research.microsoft.com/NeurIPS2018/}
-\end{center}
-
-Please read the instructions below carefully and follow them faithfully.
 
 \subsection{Style}
 
@@ -482,17 +471,6 @@ when listing the references. {\bf Remember that you can use more than eight
 
 \small
 
-[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms for
-connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and T.K.\ Leen
-(eds.), {\it Advances in Neural Information Processing Systems 7},
-pp.\ 609--616. Cambridge, MA: MIT Press.
-
-[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS: Exploring
-  Realistic Neural Models with the GEneral NEural SImulation System.}  New York:
-TELOS/Springer--Verlag.
-
-[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of learning and
-recall at excitatory recurrent synapses and cholinergic modulation in rat
-hippocampal region CA3. {\it Journal of Neuroscience} {\bf 15}(7):5249-5262.
+\printbibliography
 
 \end{document}
