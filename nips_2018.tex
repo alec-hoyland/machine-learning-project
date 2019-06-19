@@ -55,13 +55,7 @@
   Department of Biology and Volen National Center for Complex Systems \\
   Brandeis University \\
   Waltham, MA 02453 \\
-  \texttt{machinelearning@cosmo.red} \\
-  \And
-  Srinivas Gorur-Shandilya \\
-  Department of Biology and Volen National Center for Complex Systems \\
-  Brandeis University \\
-  Waltham, MA 02453 \\
-  \texttt{srinivasgs@brandeis.edu}
+  \texttt{machinelearning@cosmo.red}
 }
 
 \begin{document}
@@ -107,6 +101,82 @@ fast Fourier transform-accelerated interpolation-based t-SNE (FIt-SNE) \autocite
 and uniform manifold approximation and projection \autocite{mcinnesUMAPUniformManifold2018}.
 
 \section{Crabsort}
+
+\texttt{crabsort} is a toolkit for visualizing and sorting electrophysiological data.
+Its name originates in its use on electrophysiological data from the stomatogastric ganglion in crustaceans.
+
+Data are loaded into the MATLAB (Mathworks, Newton, MA) and dimensionally reduced.
+The user then draws clusters around the low-dimensional data;
+there should be at least one cluster per cell.
+
+A neural network is trained on the prelabeled data and then let loose on the remainder of the dataset.
+
+\subsection{Dimensionality reduction}
+
+Currently there are three dimensionality-reduction algorithms implemented in \texttt{crabsort}.
+The first separates by spike amplitude, which can sometimes be sufficient.
+The second uses a naive principle component analysis (PCA) algorithm.
+PCA is an eigenvector-based multivariate analysis that linearly transforms a dataset onto
+orthogonal principle components which account for as much variance in the data as possible.
+It is a linear transformation, and is fast to use, making PCA a popular first step in exploratory data visualization.
+Unfortunately, it performs worse at clustering than more recently-developed algorithms.
+
+\texttt{crabsort} also implements t-distributed stochastic neighborhood embeddings (t-SNE),
+a type of k-nearest dimensionality reduction algorithm \autocite{vandermaatenAcceleratingTSNEUsing2014}.
+t-SNE first computes the conditional probabilities that are proportional to the similarity of each data point.
+In the original algorithm, Gaussian kernels are used with the Euclidean distance.
+The probability of $x_j$ conditioned on $x_i$ indicates the probability
+that $x_j$ would be chosen as a neighbor to $x_i$,
+if neighbors were picked in proportion to their probability density under a Gaussian distribution centered at $x_i$.
+The bandwidth of the Gaussian kernels (i.e. the variance) is set so that
+the perplexity of the conditional distribution equals a predefined hyperparameter value.
+Student's t-distribution is used in the low-dimensional representation to measure similarity,
+which is compared to the high-dimensional conditional distributions
+by minimizing the Kullback-Leibler divergence between the two, by gradient descent.
+t-SNE provides much better clustering than PCA, but is much slower, acting in $\mathcal{O}(n^2)$ time.
+
+\subsection{New dimensionality reduction algorithms}
+
+Since dimensionality reduction is crucial to generating an accurate training dataset,
+we implement backends for two improved dimensionality reduction algorithms.
+
+The first, fast Fourier transform-interpolated t-SNE (FIt-SNE)
+provides accelerated t-SNE on $\mathcal{O}(n)$.
+Common implementations of t-SNE use the Barnes-Hut approximation to simplify the n-body problem
+which must be solved during optimizing the embedding, yielding time-complexity $\mathcal{O}(n \log n)$.
+\cite{lindermanFastInterpolationbasedTSNE2019} interpolate an equispaced grid
+rather than compute the repulsive forces in the n-body problem directly.
+Computing the objective function amounts to performing a convolution over the grid.
+Since the grid is translation-invariant with respect to the interpolating spline functions,
+and the matrix associated with the convolution is Toeplitz,
+the convolution can be simplified to multiplication in the Fourier domain,
+by taking the fast Fourier transform (FFT).
+
+In addition, instead of taking k-nearest neighbors,
+FIt-SNE uses an approximate nearest-neighbors algorithm, \texttt{ANNOY} (cite),
+which can take advantage of multithreading for a speed increase.
+FIt-SNE results in time-complexity $\mathcal{O}(n \log n)$,
+but converges 15-30x times faster than the Barnes-Hut accelerated t-SNE implementation.
+
+Like FIt-SNE, uniform manifold approximation and projection (UMAP) \autocite{mcinnesUMAPUniformManifold2018}
+is based on a k-nearest neighbors algorithm, however unlike t-SNE, UMAP is not stochastic.
+It relies on three core assumptions:
+
+\begin{itemize}
+  \item The data are uniformly distributed on a Riemannian manifold.
+  \item The Riemannian metric is locally constant (or can be approximated as such).
+  \item The manifold is locally connected.
+\end{itemize}
+
+While the theoretical underpinnings are satisfactory for any fuzzy simplicial sets,
+the algorithm is best implemented over a weighted graph.
+The k-nearest neighbors weighted graph can be computed by any suitable algorithm.
+UMAP then performs spectral clustering on the Laplacian matrix constructed from the graph.
+Optimization of the fuzzy simplicial set cross entropy follows to optimize the embedding.
+UMAP is stable under subsampling and must faster than even FIt-SNE,
+though the clustering is more opaque, and therefore sometimes less desirable than PCA or t-SNE.
+Furthermore, it is deterministic and therefore allows new data to be added to embedded
+without recomputing the entire embedded representation.
 
 NeurIPS requires electronic submissions.  The electronic submission site is
 \begin{center}
