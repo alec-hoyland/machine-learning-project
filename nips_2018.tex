@@ -139,7 +139,7 @@ we implement backends for two improved dimensionality reduction algorithms.
 The first, fast Fourier transform-interpolated t-SNE (FIt-SNE)
 provides accelerated t-SNE on $\mathcal{O}(n)$.
 Common implementations of t-SNE use the Barnes-Hut approximation to simplify the n-body problem
-which must be solved during optimizing the embedding, yielding time-complexity $\mathcal{O}(n \log n)$.
+which must be solved during optimizing the embedding, yielding time-complexity $\mathcal{O}(n \log n)$ \autocite{vandermaatenAcceleratingTSNEUsing2014}.
 \cite{lindermanFastInterpolationbasedTSNE2019} interpolate an equispaced grid
 rather than compute the repulsive forces in the n-body problem directly.
 Computing the objective function amounts to performing a convolution over the grid.
