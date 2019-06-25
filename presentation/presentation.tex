@@ -119,6 +119,32 @@
 
 \begin{frame}
   \frametitle{Crabsort}
+
+  Crabsort is a toolkit for spike-sorting in small circuit networks written by
+  Srinivas Gorur-Shandilya, Alec Hoyland, and Cosmo Guerini.
+
+  \begin{columns}
+    \column{0.5\textwidth}
+
+    \begin{enumerate}
+      \item Find spikes.
+      \item Dimensionally reduce waveform snippets.
+      \item Manually cluster.
+      \item Train neural network.
+      \item Run neural network on remaining data.
+    \end{enumerate}
+
+    \column{0.5\textwidth}
+
+    \begin{figure}
+      \includegraphics[width=0.75\textwidth]{gfx/crabsort-accuracy.png}
+      \centering
+      \caption{Crabsort correctly identifies 75\% of spikes, which is way better than a human.}
+      \label{fig:crabsorting}
+    \end{figure}
+
+  \end{columns}
+
 \end{frame}
 
 % dimensionality reduction
@@ -146,6 +172,34 @@
     \label{fig:dimredexample}
   \end{figure}
 
+\end{frame}
+
+% crabsort videos
+
+\begin{frame}
+
+  \begin{center}
+    \movie[width=\textwidth, height=0.3\textwidth, loop]{}{gfx/lvn-sort.mov}
+    \caption{Spike-sorting, dimensional reduction, and manual clustering.}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+
+  \begin{center}
+    \movie[width=\textwidth, height=0.3\textwidth, loop]{}{gfx/training-20348.mov}
+    \caption{Spike-sorting, dimensional reduction, and manual clustering.}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+
+  \begin{center}
+    \movie[width=\textwidth, height=0.3\textwidth, loop]{}{gfx/predict-20353.mov}
+    \caption{Spike-sorting, dimensional reduction, and manual clustering.}
+  \end{center}
 
 \end{frame}
 
