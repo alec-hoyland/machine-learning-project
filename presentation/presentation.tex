@@ -151,14 +151,61 @@
 
 % t-SNE and FIt-SNE
 
-\begin{frame}
-  \frametitle{t-SNE}
+\begin{frame}[t]
+  \frametitle{t-distributed stochastic neighborhood embedding}
+
+  \begin{columns}
+    \column{.5\linewidth}
+
+    \begin{enumerate}
+      \item Choose nearest neighbors for $x_i$ via a multi-dimensional Gaussian probability distribution centered at $x_i$.
+      \item Compute t-distributed similarity measure in low-dimensional space.
+      \item Minimize the Kullback-Leibler divergence between the high-dimensional distribution and the low-dimensional distribution.
+    \end{enumerate}
+
+
+    \column{.5\linewidth}
+
+    With FFT-interpolation
+
+    \begin{enumerate}
+      \item Computing objective function requires a convolution.
+       So, interpolated equispaced grid, and compute convolution
+       in Fourier space using FFT.
+       \item Use approximate nearest neighbors (ANNOY) to multithread kNN task.
+       \item 15-30x faster at $\mathcal{O}(n \log n)$.
+    \end{enumerate}
+
+  \end{columns}
+
 \end{frame}
 
 % UMAP
 
 \begin{frame}
-  \frametitle{UMAP}
+  \frametitle{Uniform manifold approximation and projection}
+
+  \begin{columns}
+    \column{0.5\textwidth}
+
+    \begin{enumerate}
+      \item k-nearest neighbors leads to a weighted graph
+      which defines a manifold
+      \item Spectral clustering on the Laplacian matrix
+      \item Minimization of fuzzy simplicial set cross entropy optimizes embedding.
+    \end{enumerate}
+
+    \column{0.5\textwidth}
+
+    \begin{figure}
+      \includegraphics[width=0.75\textwidth]{gfx/umap.png}
+      \centering
+      \caption{Comparison of UMAP, t-SNE and other dimensional reduction techniques.}
+      \label{fig:dimredcompare}
+    \end{figure}
+
+  \end{columns}
+
 \end{frame}
 
 % \subsection{Rationale}
@@ -173,13 +220,13 @@
 %
 %     Xolotl should be
 %
-%     \begin{itemize}
+%     \begin{enumerate}
 %       \item fast
 %       \item easy-to-use
 %       \item well-documented
 %       \item hackable and extensible
 %       \item auditable
-%     \end{itemize}
+%     \end{enumerate}
 %
 %     \column{0.5\textwidth}
 %
@@ -217,22 +264,22 @@
 %     \column{0.35\textwidth}
 %     Types of Components:
 %
-%     \begin{itemize}
+%     \begin{enumerate}
 %       \item Compartments
-%       \begin{itemize}
+%       \begin{enumerate}
 %         \item Mechanisms
-%       \end{itemize}
-%       \begin{itemize}
+%       \end{enumerate}
+%       \begin{enumerate}
 %         \item Conductances
-%         \begin{itemize}
+%         \begin{enumerate}
 %           \item Mechanisms
-%         \end{itemize}
+%         \end{enumerate}
 %         \item Synapses
-%         \begin{itemize}
+%         \begin{enumerate}
 %           \item Mechanisms
-%         \end{itemize}
-%       \end{itemize}
-%     \end{itemize}
+%         \end{enumerate}
+%       \end{enumerate}
+%     \end{enumerate}
 %
 %
 %     \begin{figure}
@@ -258,7 +305,7 @@
 % \begin{frame}{Embedded Animation}
 %   \frametitle{Cool features}
 %
-%     \begin{itemize}
+%     \begin{enumerate}
 %       \item \texttt{puppeteer}: real-time parameter manipulation
 %       \item \texttt{xgrid}: parallel simulation across a distributed network
 %       \item \texttt{xfit}: parameter optimization using particle swarm and genetic algorithms
@@ -268,7 +315,7 @@
 %       \item automatic component generation from MATLAB
 %       \item hyperlinking and tab-completion in the console
 %       \item multiple solvers, look-up table caching
-%     \end{itemize}
+%     \end{enumerate}
 %
 % \end{frame}
 %
@@ -277,7 +324,7 @@
 % \begin{frame}{Embedded Animation}
 %   \frametitle{Coming Soon}
 %
-%     \begin{itemize}
+%     \begin{enumerate}
 %       \item multi-threading of a single simulation
 %       \item server-side compilation / stand-alone integration
 %       \item (multi-compartment) server-side GPU computation of Hines matrices
@@ -286,7 +333,7 @@
 %       \item adaptive time-step solvers (quadrature)
 %       \item robust front-end unit support
 %       \item Julia front-end (compatible with Python, etc.)
-%     \end{itemize}
+%     \end{enumerate}
 %
 % \end{frame}
 %
