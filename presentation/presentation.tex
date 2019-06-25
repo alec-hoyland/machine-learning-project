@@ -3,7 +3,7 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{listings}
-\usepackage{matlab-prettifier}
+% \usepackage{matlab-prettifier}
 \usepackage[T1]{fontenc}
 \usepackage{multimedia}
 \usepackage{hyperref}
@@ -80,21 +80,35 @@
 
   \medskip
 
-  For large networks, spike sorting means:
+  \begin{columns}
+    \column{0.5\textwidth}
 
-  \begin{enumerate}
-    \item Methods: PCA, SVD, stochastic k-means matching of correllograms
-    \item Data: 100s of channels but without a ground truth
-  \end{enumerate}
+    For large networks, spike sorting means:
 
-  \medskip
+    \begin{enumerate}
+      \item Methods: PCA, SVD, stochastic k-means matching of correllograms
+      \item Data: 100s of channels but without a ground truth
+    \end{enumerate}
 
-  For small networks, spike sorting means:
+    \medskip
 
-  \begin{enumerate}
-    \item Methods: dimensionality reduction, machine learning
-    \item Data: few channels with known activity
-  \end{enumerate}
+    For small networks, spike sorting means:
+
+    \begin{enumerate}
+      \item Methods: dimensionality reduction, machine learning
+      \item Data: few channels with known activity
+    \end{enumerate}
+
+    \column{0.5\textwidth}
+
+    \begin{figure}
+      \includegraphics[width=\textwidth]{gfx/spike-sorting.jpeg}
+      \centering
+      \caption{Spike-sorting using PCA and window filtering by spike-waveform analysis (R. Quian Quiroga).}
+      \label{fig:spikesorting}
+    \end{figure}
+
+  \end{columns}
 
 \end{frame}
 
