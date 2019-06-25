@@ -34,6 +34,8 @@
 
 \section{Introduction}
 
+% introduce the problem
+
 \begin{frame}
   \frametitle{Spike-sorting primer}
 
@@ -59,6 +61,36 @@
     \end{figure}
 
   \end{columns}
+
+\end{frame}
+
+% introduce past solutions
+
+\begin{frame}
+  \frametitle{How to sort spikes}
+
+  \begin{enumerate}
+    \item Identify spikes from membrane potential waveform (easy)
+    \item Sort spikes using some magic algorithm (hard)
+  \end{enumerate}
+
+  \medskip
+
+  For large networks, spike sorting means:
+
+  \begin{enumerate}
+    \item Methods: PCA, SVD, stochastic k-means matching of correllograms
+    \item Data: 100s of channels but without a ground truth
+  \end{enumerate}
+
+  \medskip
+
+  For small networks, spike sorting means:
+
+  \begin{enumerate}
+    \item Methods: dimensionality reduction, machine learning
+    \item Data: few channels with known activity
+  \end{enumerate}
 
 \end{frame}
 
