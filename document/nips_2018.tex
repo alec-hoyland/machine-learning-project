@@ -83,9 +83,10 @@ these algorithms break down. With paucity of data and similarity between wavefor
 it is not feasible to use algorithms designed for large multi-channel recordings on smaller circuit data.
 Furthermore, methods such as Granger causality can report spurious causal relationships
 if the network is strongly oscillatory \autocite{kisperskyFunctionalConnectivityRhythmic2011}.
-One solution is to use a mixed linear point process model \autocite{gerhardSuccessfulReconstructionPhysiological2013a}.
+One solution is to use a mixed linear point process model \autocite{gerhardSuccessfulReconstructionPhysiological2013a},
+but this strategy is not extensible to unknown systems, or for use with unlabeled data.
 
-Another strategy, implemented in the software package \texttt{crabsort} (S. Gorur-Shandilya, unpublished),
+Another strategy, implemented in the software package \texttt{crabsort} (S. Gorur-Shandilya \textit{et al.}, unpublished),
 uses pre-sorted data to train a neural network model which can automatically sort the remaining data.
 Briefly, this process involves dimensionally-reducing the spike trains to a 2-dimensional manifold
 and manually clustering a subset of the data.
@@ -101,13 +102,38 @@ and uniform manifold approximation and projection \autocite{mcinnesUMAPUniformMa
 \texttt{crabsort} is a toolkit for visualizing and sorting electrophysiological data.
 Its name originates in its use on electrophysiological data from the stomatogastric ganglion in crustaceans.
 
-Data are loaded into the MATLAB (Mathworks, Newton, MA) and dimensionally reduced.
-The user then draws clusters around the low-dimensional data;
-there should be at least one cluster per cell.
+Raw electrophysiological data are loaded into MATLAB (Mathworks, Newton, MA) and spikes are found using the built-in peak finding algorithm
+with parameters that can be adjusted in real-time.
+The training data typically consists of less than 1 percent of the total data to be spike-sorted.
 
-A neural network is trained on the prelabeled data and then let loose on the remainder of the dataset.
+Snippets around each spike waveform are taken.
+The membrane potential at each time step is counted as the value in a different dimension,
+so that the number of dimensions is usually around 70.
 
-\subsection{Dimensionality reduction}
+The data are then dimensionally-reduced to a 2-dimensional manifold.
+This is one of the most crucial steps, as the dimensional reduction method determines the spatialization of the clusters
+and therefore the representativeness of the training data given to the neural network.
+The choice of dimensionality reduction algorithm, along with the noise in the data
+and distinguishability of the classifications (different neurons from whence the spike originated)
+determine the separation of clusters in the low-dimensional space.
+
+A neural network consisting of two fully-connected layers, interspersed with reLU layers,
+is trained on the clustered data.
+A layer with a 10 percent dropout rate leads to a softmax-activated classification layer.
+
+After training, \texttt{crabsort} can be used to classify the remaining spikes in the dataset.
+
+If the spike does not clearly fit into one of the classes, \texttt{crabsort} flags it.
+If spikes are manually reclassified after viewing the prediction, \texttt{crabsort} retrains the network to encompass those new data.
+
+\subsection{Aims of this project}
+
+We add to the extant \texttt{crabsort} framework,
+by extending the dimensionality reduction options beyond naive PCA and t-SNE.
+We implement a faster and more accurate version of t-SNE that uses fast-Fourier transform interpolation and parallelized approximate nearest neighbors,
+as well as uniform manifold approximation and projection, a very new dimensionality reduction method that is very accurate for subsets of data.
+
+\subsection{Current dimensionality reduction algorithms}
 
 Currently there are three dimensionality-reduction algorithms implemented in \texttt{crabsort}.
 The first separates by spike amplitude, which can sometimes be sufficient.
@@ -131,20 +157,16 @@ which is compared to the high-dimensional conditional distributions
 by minimizing the Kullback-Leibler divergence between the two, by gradient descent.
 t-SNE provides much better clustering than PCA, but is much slower, acting in $\mathcal{O}(n^2)$ time.
 
-\subsection{Neural network design}
-
-\texttt{crabsort} performs sorting of spikes through an artificial neural network.
-The network consists of two fully-connected 200-node layers each followed by a reLU layer,
-then a dropout layer that connects to an $n$-node layer, where $n$ is the number of classes.
-The softmax function is used to finish the classification process.
-
-Originally, a convolutional neural network acted on the two-dimensional projection,
-but this was found to be less succssful than the fully-connected network.
-
 \section{New dimensionality reduction algorithms}
 
 Since dimensionality reduction is crucial to generating an accurate training dataset,
-we implement backends for two improved dimensionality reduction algorithms.
+we implement backends for two improved dimensionality reduction algorithms: FIt-SNE and UMAP.
+
+Since both the FIt-SNE and UMAP wrappers create structs which contain modifiable parameters,
+we modify the \texttt{crabsort} framework to expose plugin object parameters,
+for real-time tuning of algorithm parameters to better cluster the data.
+
+\subsection{FIt-SNE}
 
 The first, fast Fourier transform-interpolated t-SNE (FIt-SNE)
 provides accelerated t-SNE on $\mathcal{O}(n)$.
@@ -157,6 +179,12 @@ Since the grid is translation-invariant with respect to the interpolating spline
 and the matrix associated with the convolution is Toeplitz,
 the convolution can be simplified to multiplication in the Fourier domain,
 by taking the fast Fourier transform (FFT).
+
+FIt-SNE comes equipped with a MATLAB wrapper that runs the compiled C-code as a MEX file.
+We improve the wrapper by through minor speed improvements,
+and implement FIt-SNE as a dimensionality reduction plugin for \texttt{crabsort}.
+
+\subsection{UMAP}
 
 In addition, instead of taking k-nearest neighbors,
 FIt-SNE uses an approximate nearest-neighbors algorithm, \texttt{ANNOY} \autocite{bernhardssonApproximateNearestNeighbors2019},
@@ -183,6 +211,9 @@ UMAP is stable under subsampling and must faster than even FIt-SNE,
 though the clustering is more opaque, and therefore sometimes less desirable than PCA or t-SNE.
 Furthermore, UMAP is deterministic and therefore allows new data to be mapped to the low-dimensional space
 without recomputing the entire embedded representation.
+
+Since UMAP is written in Python, we used \texttt{condalab} and a UMAP wrapper for MATLAB
+to configure a virtual environment for use with \texttt{crabsort}.
 
 \subsection{Style}
 
