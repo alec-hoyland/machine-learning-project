@@ -277,18 +277,48 @@ and proved to be the best algorithm among the four tested for this particular ap
   \end{tabular}
 \end{table}
 
+\section{Discussion}
+
+We implemented two backends for dimensionality reduction to the \texttt{crabsort}
+spike-sorting toolkit.
+Both backends are integrated into the GUI,
+and exist as methods of the \texttt{crabsort} class.
+
+The first backend, for fast Fourier transform-interpolated t-SNE,
+proved to be the simpler to implement, since the source code is in C,
+and calling C code from MATLAB is trivialized by use of MEX functions.
+To our surprise, however, FIt-SNE proved much slower than the native t-SNE
+algorithm.
+We suspect that this limitation would be mitigated for larger datasets,
+as the FIt-SNE algorithm uses a very conservative optimization procedure
+to account for the interpolation effect.
+In small datasets, early exaggeration, another feature of FIt-SNE, does not strongly
+affect the time to converge.
+For random, uncorrelated datasets, FIt-SNE embeds faster than native t-SNE
+for datasets with more than 10,000 datapoints.
+
+UMAP performed very well, making explicable clusters in comparable time to native t-SNE.
+While both UMAP and t-SNE take much longer than PCA,
+the PCA embedding is unsuitable for manual clustering.
+
+However, using the UMAP algorithm in MATLAB requires some workarounds,
+since the source code is in Python.
+MATLAB does not work well with Anaconda.
+Solutions which used to work very well, such as \texttt{condalab},
+to switch conda environments in MATLAB, no longer work.
+In fact, \texttt{condalab} may actually break working solutions.
+To use UMAP in MATLAB with Anaconda, it is necessary to set the conda environment,
+then run MATLAB from the same terminal session.
+Furthermore, it is imperative that \texttt{.mat} files containing options or data
+are saved as version 7.3 files \cite{MATFileLevelFile2015},
+or modules for reading HDF5 files, such as \texttt{h5py} will not be able to load the files.
+
 \subsubsection*{Acknowledgments}
 
 Thank you to Dustin Clark at Research Computing Services, Boston University,
 for his help debugging Python-MATLAB compatibility,
 and to Srinivas Gorur-Shandilya at Brandeis University,
 for helming the \texttt{crabsort} project.
-%
-% \section*{References}
-%
-% \medskip
-%
-% \small
 
 \printbibliography
 
