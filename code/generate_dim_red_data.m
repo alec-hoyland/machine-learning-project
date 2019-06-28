@@ -1,5 +1,20 @@
 function [D, times] = generate_dim_red_data(expID, verbose)
 
+  % generate dimensionally-reduced data using four methods
+  % PCA, t-SNE, FIt-SNE, and UMAP
+
+  %% Arguments
+  %   expID: name of an experimental file, so that
+  %     the filename is 'crabsort-expID.mat'
+  %   verbose: flag determining whether to print informational statements
+  %% Outputs
+  %   D: the data in an n x 2 x 4 tensor
+  %     the first dimension is the number of spikes
+  %   times: a 4-vector of elapsed time during benchmarking
+
+  %% example usage
+  % [D, times] = generate_dim_red_data('901_046_0000');
+
   if nargin < 2
     verbose = true;
   end
