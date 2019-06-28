@@ -19,7 +19,7 @@ function figure_dim_red_comparison(fig, D)
 
   for ii = 4:-1:1
     ax(ii) = subplot(2, 2, ii); hold on
-    scatter(ax(ii), squeeze(D(:, 1, ii)), squeeze(D(:, 2, ii)), 'k')
+    scatter(ax(ii), squeeze(D(:, 1, ii)), squeeze(D(:, 2, ii)), 'k', 'MarkerEdgeAlpha', 0.5)
   end
 
   title(ax(1), 'PCA')
