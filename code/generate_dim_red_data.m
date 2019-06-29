@@ -5,7 +5,6 @@ function [D, times] = generate_dim_red_data(expID, verbose)
 
   %% Arguments
   %   expID: name of an experimental file, so that
-  %     the filename is 'crabsort-<expID>.mat'
   %   verbose: flag determining whether to print informational statements
   %% Outputs
   %   D: the data in an n x 2 x 4 tensor
@@ -20,7 +19,7 @@ function [D, times] = generate_dim_red_data(expID, verbose)
   end
 
   % load the data, which should be a crabsort object, expects it to be named 'c'
-  load(['crabsort-' expID '.mat'])
+  load(expID);
   corelib.verb(verbose, 'INFO', 'data loaded')
 
   % create the output container

@@ -223,30 +223,37 @@ Data were collected from the stomatogastric ganglion of \textit{Cancer borealis}
 by Daniel Powell in the Marder Laboratory at Brandeis University.
 Electrophysiological recordings were taken at a 44.4 kHz sample frequency,
 and stored in multiple \texttt{.abf} files.
-The dataset used for benchmarking, \texttt{901-046}, was segmented into 126 files.
+The dataset used for benchmarking, \texttt{901\_046}, was segmented into 126 files.
 The first of these files was used for clustering and training the neural network.
+
+\subsection{Single-cell classification}
 
 180 spikes were found using the \texttt{findpeaks} algorithm
 and 947 time steps were taken around each spike.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{gfx/crabsort.eps}
-  \caption{Snapshot of the \texttt{crabsort} GUI. The top trace was used for benchmarking. Spikes are denoted by circles.}
-  \label{fig:crabsort}
+  \includegraphics[width=\textwidth]{gfx/crabsort-1.eps}
+  \caption{Snapshot of the \texttt{crabsort} GUI. The blue trace was used for benchmarking. Spikes are denoted by circles.}
+  \label{fig:crabsort-1}
 \end{figure}
+
+In \ref{crabsort-1}, the blue trace contains extracellular recordings from one cell.
+The clustering is shown in \ref{dim-red-comparison-1}.
+We use this trace as evidence of one-class classification,
+as a basic proof-of-concept of the algorithms.
 
 Four dimensionality-reduction schemes were tested: PCA, t-SNE, FIt-SNE, and UMAP.
 PCA performs the worst, as it can only account for linear combinations.
 t-SNE and FIt-SNE are almost indistinguishable, modulo randomness.
 The long chains that appear in the UMAP-reduced presentation are a result of
-the simplicial complexes used to construct the topological space.
+the simplicial complexes used to construct the topological space.W
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{gfx/dim-red.eps}
-  \caption{Four dimensionality-reduction schemes run on the same data.}
-  \label{fig:dim-red-comparison}
+  \includegraphics[width=\textwidth]{gfx/dim-red-1.eps}
+  \caption{Four dimensionality-reduction schemes run on the same data, where one cluster should be found.}
+  \label{fig:dim-red-comparison-1}
 \end{figure}
 
 Surprisingly, FIt-SNE performed terribly in time benchmarking.
@@ -262,8 +269,8 @@ UMAP performed as well as promised, acting in a competitive amount of time with 
 and proved to be the best algorithm among the four tested for this particular application.
 
 \begin{table}
-  \caption{Time elapsed during dimensionality reduction.}
-  \label{tbl:dim-red-time}
+  \caption{Time elapsed during dimensionality reduction for a 3-class channel.}
+  \label{tbl:dim-red-time-1}
   \centering
   \begin{tabular}{lS}
     \toprule
@@ -273,6 +280,57 @@ and proved to be the best algorithm among the four tested for this particular ap
     t-SNE   & 5.2076 \\
     FIt-SNE & 21.3535 \\
     UMAP    & 4.5879 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Multi-cell classification}
+
+The \textit{mvn} nerve contains action potentials from two cells.
+This leads to a 3-class classification problem: one class for each cell, and the noise class.
+We should expect three clusters in the dimensionally-reduced manifold.
+Determining which cluster corresponds to which cell is determined
+in the \texttt{crabsort} GUI.
+Clicking on a point on the manifold reveals the spike in the time series.
+Clicking and dragging in a circle adds all containing points to the selected cluster.
+
+Three clusters appear clearly in the t-SNE, FIt-SNE, and UMAP-reduced manifolds,
+however the PCA-reduced manifold only shows two clusters.
+PCA was able to identify the two cells contributing to the \textit{mvn},
+however the spurious spikes are arrayed around the exterior of the two clusters,
+rather than separated in a third cluster.
+This makes t-SNE, FIt-SNE, and UMAP superior choices.
+FIt-SNE continues to underperform.
+This could be due to poorly-tuned parameters, or the size of the dataset.
+The clear winner, however, is UMAP, which outperforms all other dimensionality-reduction methods tested,
+and is deterministic, so that novel datapoint can be embedded without recomputing the embedding.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{gfx/crabsort-2.eps}
+  \caption{Snapshot of the \texttt{crabsort} GUI. The orange trace was used for benchmarking. Spikes are denoted by circles and x's.}
+  \label{fig:crabsort-1}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{gfx/dim-red-2.eps}
+  \caption{Four dimensionality-reduction schemes run on the same data, where three clusters should be found.}
+  \label{fig:dim-red-comparison-1}
+\end{figure}
+
+\begin{table}
+  \caption{Time elapsed during dimensionality reduction for a 3-class channel.}
+  \label{tbl:dim-red-time-1}
+  \centering
+  \begin{tabular}{lS}
+    \toprule
+    Algorithm Name     & Time~Elapsed~(s) \\
+    \midrule
+    PCA     & 0.0391 \\
+    t-SNE   & 6.3638 \\
+    FIt-SNE & 21.3535 \\
+    UMAP    & 4.8809 \\
     \bottomrule
   \end{tabular}
 \end{table}
