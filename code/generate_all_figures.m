@@ -1,4 +1,10 @@
 % generate the dimensionally-reduced data, and time it
+% assume there's a .mat file on your path named 'crabsort-<whatever>.mat'
+% that contains a crabsort object named c
+% that has the 'data_to_reduce' property filled out
+% give 'generate_dim_red_data' 'whatever' as an argument
+% and it will compute the points in the reduced manifold
+
 [D, times] = generate_dim_red_data('901_046_0000');
 
 % plot the dimensionally reduced data

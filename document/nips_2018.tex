@@ -70,7 +70,7 @@
 
 \section{Introduction}
 
-Electrophysiological recording by extracelullar electrode is one of the simplest and most reliable
+Electrophysiological recording by extracellular electrode is one of the simplest and most reliable
 methods for recording local electrical activity around the electrode tip.
 Action potentials produce characteristic voltage deflections, known as a spike waveform.
 The extracellular recordings take the form of voltage time series, with one waveform for each electrode,
@@ -171,7 +171,7 @@ for real-time tuning of algorithm parameters to better cluster the data.
 \subsection{FIt-SNE}
 
 The first, fast Fourier transform-interpolated t-SNE (FIt-SNE)
-provides accelerated t-SNE on $\mathcal{O}(n)$.
+provides accelerated t-SNE on $\mathcal{O}(n \log n)$.
 Common implementations of t-SNE use the Barnes-Hut approximation to simplify the n-body problem
 which must be solved during optimizing the embedding, yielding time-complexity $\mathcal{O}(n \log n)$ \autocite{vandermaatenAcceleratingTSNEUsing2014}.
 \cite{lindermanFastInterpolationbasedTSNE2019} interpolate an equispaced grid
@@ -182,17 +182,17 @@ and the matrix associated with the convolution is Toeplitz,
 the convolution can be simplified to multiplication in the Fourier domain,
 by taking the fast Fourier transform (FFT).
 
-FIt-SNE comes equipped with a MATLAB wrapper that runs the compiled C-code as a MEX file.
-We improve the wrapper by through minor speed improvements,
-and implement FIt-SNE as a dimensionality reduction plugin for \texttt{crabsort}.
-
-\subsection{UMAP}
-
 In addition, instead of taking k-nearest neighbors,
 FIt-SNE uses an approximate nearest-neighbors algorithm, \texttt{ANNOY} \autocite{bernhardssonApproximateNearestNeighbors2019},
 which can take advantage of multithreading for a speed increase.
 FIt-SNE results in time-complexity $\mathcal{O}(n \log n)$,
 but converges 15-30x times faster than the Barnes-Hut accelerated t-SNE implementation.
+
+FIt-SNE comes equipped with a MATLAB wrapper that runs the compiled C-code as a MEX file.
+We improve the wrapper by through minor speed improvements,
+and implement FIt-SNE as a dimensionality reduction plugin for \texttt{crabsort}.
+
+\subsection{UMAP}
 
 Like FIt-SNE, uniform manifold approximation and projection (UMAP) \autocite{mcinnesUMAPUniformManifold2018}
 is based on a k-nearest neighbors algorithm, however unlike t-SNE, UMAP is not stochastic.
@@ -209,7 +209,7 @@ the algorithm is best implemented over a weighted graph.
 The k-nearest neighbors weighted graph can be computed by any suitable algorithm.
 UMAP then performs spectral clustering on the Laplacian matrix constructed from the graph.
 Optimization of the fuzzy simplicial set cross entropy follows to optimize the embedding.
-UMAP is stable under subsampling and must faster than even FIt-SNE,
+UMAP is stable under subsampling and is faster than even FIt-SNE,
 though the clustering is more opaque, and therefore sometimes less desirable than PCA or t-SNE.
 Furthermore, UMAP is deterministic and therefore allows new data to be mapped to the low-dimensional space
 without recomputing the entire embedded representation.
@@ -255,7 +255,7 @@ to determine the best t-SNE fit.
 For example, using the ANNOY library for the approximate k-nearest-neighbors
 search was parallelized, and took only 0.037 s with $k=90$.
 The algorithm terminated the gradient descent optimization after 1,000 iterations.
-Though FIt-SNE should be theoretically faster than t-SNE, for a small dataset,
+Though FIt-SNE should be theoretically faster than t-SNE, for a small dataset
 it proves to be much slower without a significant increase in cluster separation.
 
 UMAP performed as well as promised, acting in a competitive amount of time with t-SNE,
@@ -310,7 +310,7 @@ In fact, \texttt{condalab} may actually break working solutions.
 To use UMAP in MATLAB with Anaconda, it is necessary to set the conda environment,
 then run MATLAB from the same terminal session.
 Furthermore, it is imperative that \texttt{.mat} files containing options or data
-are saved as version 7.3 files \cite{MATFileLevelFile2015},
+are saved as version 7.3 files \autocite{MATFileLevelFile2015},
 or modules for reading HDF5 files, such as \texttt{h5py} will not be able to load the files.
 
 \subsubsection*{Acknowledgments}
